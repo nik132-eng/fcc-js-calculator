@@ -1,35 +1,143 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [display, setDisplay] = useState<string>('0');
+  const [currentValue, setCurrentValue] = useState<string>('');
+  const [operator, setOperator] = useState<string>('');
+  const [previousValue, setPreviousValue] = useState<string>('');
+
+  const handleNumberClick = (value: string) => {
+    if (display === '0' && value === '0') return;
+
+    if (operator) {
+      setCurrentValue(value);
+      setDisplay(value);
+      setOperator('');
+    } else {
+      setCurrentValue(currentValue + value);
+      setDisplay(currentValue + value);
+    }
+  };
+
+  const handleOperatorClick = (value: string) => {
+    if (operator && operator !== '-' && value !== '-') {
+      calculate();
+    } else if (operator && value === '-' && currentValue === '') {
+      setCurrentValue('-');
+      setDisplay('-');
+    } else {
+      setOperator(value);
+      setPreviousValue(currentValue);
+      setCurrentValue('');
+    }
+  };
+
+  const handleDecimalClick = () => {
+    if (!currentValue.includes('.')) {
+      setCurrentValue(currentValue + '.');
+      setDisplay(display + '.');
+    }
+  };
+
+  const handleClearClick = () => {
+    setDisplay('0');
+    setCurrentValue('');
+    setOperator('');
+    setPreviousValue('');
+  };
+
+  const calculate = () => {
+    let result;
+    const prev = parseFloat(previousValue);
+    const current = parseFloat(currentValue);
+
+    switch (operator) {
+      case '+':
+        result = prev + current;
+        break;
+      case '-':
+        result = prev - current;
+        break;
+      case '*':
+        result = prev * current;
+        break;
+      case '/':
+        result = prev / current;
+        break;
+      default:
+        return;
+    }
+
+    setDisplay(result.toString());
+    setCurrentValue(result.toString());
+    setPreviousValue(result.toString());
+  };
+
+  const handleEqualsClick = () => {
+    calculate();
+    setOperator('');
+    setPreviousValue('');
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <div className="calculator">
+      <div id="display">{display}</div>
+      <div className="buttons">
+        <button id="clear" onClick={handleClearClick}>
+          AC
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        <button id="divide" onClick={() => handleOperatorClick('/')}>
+          /
+        </button>
+        <button id="multiply" onClick={() => handleOperatorClick('*')}>
+          x
+        </button>
+        <button id="seven" onClick={() => handleNumberClick('7')}>
+          7
+        </button>
+        <button id="eight" onClick={() => handleNumberClick('8')}>
+          8
+        </button>
+        <button id="nine" onClick={() => handleNumberClick('9')}>
+          9
+        </button>
+        <button id="subtract" onClick={() => handleOperatorClick('-')}>
+          -
+        </button>
+        <button id="four" onClick={() => handleNumberClick('4')}>
+          4
+        </button>
+        <button id="five" onClick={() => handleNumberClick('5')}>
+          5
+        </button>
+        <button id="six" onClick={() => handleNumberClick('6')}>
+          6
+        </button>
+        <button id="add" onClick={() => handleOperatorClick('+')}>
+          +
+        </button>
+        <button id="one" onClick={() => handleNumberClick('1')}>
+          1
+        </button>
+        <button id="two" onClick={() => handleNumberClick('2')}>
+          2
+        </button>
+        <button id="three" onClick={() => handleNumberClick('3')}>
+          3
+        </button>
+        <button id="decimal" onClick={handleDecimalClick}>
+          .
+        </button>
+        <button id="equals" onClick={handleEqualsClick}>
+          =
+        </button>
+        <button id="zero" onClick={() => handleNumberClick('0')}>
+          0
+        </button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
