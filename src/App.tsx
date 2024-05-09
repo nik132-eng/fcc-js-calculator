@@ -10,14 +10,8 @@ function App() {
   const handleNumberClick = (value: string) => {
     if (display === '0' && value === '0') return;
 
-    if (operator) {
-      setCurrentValue(value);
-      setDisplay(value);
-      setOperator('');
-    } else {
       setCurrentValue(currentValue + value);
-      setDisplay(currentValue + value);
-    }
+      setDisplay(operator ? (previousValue + operator + currentValue + value) : currentValue + value);
   };
 
   const handleOperatorClick = (value: string) => {
@@ -29,6 +23,7 @@ function App() {
     } else {
       setOperator(value);
       setPreviousValue(currentValue);
+      setDisplay(currentValue+value)
       setCurrentValue('');
     }
   };
@@ -51,7 +46,7 @@ function App() {
     let result;
     const prev = parseFloat(previousValue);
     const current = parseFloat(currentValue);
-
+    console.log("prev, current, operator",prev,current, operator)
     switch (operator) {
       case '+':
         result = prev + current;
@@ -81,6 +76,7 @@ function App() {
   };
 
   return (
+    <>
     <div className="calculator">
       <div id="display">{display}</div>
       <div className="buttons">
@@ -137,6 +133,10 @@ function App() {
         </button>
       </div>
     </div>
+    <div className='warning-alert'> 
+      <h4>This is  simple calculator which do calculation only for two numbers and one operator, Not handled all cases</h4>
+    </div>
+    </>
   );
 }
 
